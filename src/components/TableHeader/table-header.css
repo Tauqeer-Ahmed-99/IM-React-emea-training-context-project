@@ -1,0 +1,21 @@
+.homescreen .table-header,
+.homescreen .table-item {
+  background: #333;
+
+  margin-top: 1rem;
+  padding: 1rem;
+
+  border-radius: 0.25rem;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.homescreen .table-header span,
+.homescreen .table-item span {
+  width: 25%;
+  max-height: 100%;
+
+  text-align: center;
+}
