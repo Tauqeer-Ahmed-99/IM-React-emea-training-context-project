@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 import TableHeader from "../components/TableHeader/TableHeader";
 import TableItem from "../components/TableItem/TableItem";
@@ -6,6 +6,7 @@ import Dialog from "../components/Dialog/Dialog";
 import CloseIcon from "../assets/close.svg";
 
 import "./homescreen.css";
+import AddressContext from "../context/AddressContext/AddressContext";
 
 const HomeScreen = () => {
   const [isCreatingNewContact, setCreatingNewContact] = useState(false);
@@ -13,12 +14,7 @@ const HomeScreen = () => {
   const [contactIdToEdit, setContactIdToEdit] = useState<null | number>(null);
   const [formValues, setFormValues] = useState({ name: "", contact: "" });
 
-  const contacts = [
-    { id: Math.random(), name: "Tauqeer", contact: 1234567890 },
-    { id: Math.random(), name: "Tanvir", contact: 1234567890 },
-    { id: Math.random(), name: "Pradeep", contact: 1234567890 },
-    { id: Math.random(), name: "Hitesh", contact: 1234567890 },
-  ];
+  const addressesContext = useContext(AddressContext);
 
   const handleNewContactClick = () => {
     setCreatingNewContact(true);
@@ -46,12 +42,23 @@ const HomeScreen = () => {
   };
 
   const handleCreateORUpdateClick = (id?: number) => {
+    if (isCreatingNewContact) {
+      addressesContext.createAddress(formValues.name, +formValues.contact);
+    } else {
+      addressesContext.updateAddress(
+        id as number,
+        formValues.name,
+        +formValues.contact
+      );
+    }
     closeForm();
   };
 
   const handleEditClick = (id: number) => {
     setContactIdToEdit(id);
-    const selectedContact = contacts.find((contact) => contact.id === id);
+    const selectedContact = addressesContext.addresses.find(
+      (contact) => contact.id === id
+    );
     if (selectedContact) {
       setFormValues({
         name: selectedContact.name,
@@ -103,7 +110,7 @@ const HomeScreen = () => {
       </Dialog>
       <main>
         <TableHeader />
-        {contacts.map((contact) => (
+        {addressesContext.addresses.map((contact) => (
           <TableItem
             key={contact.id}
             name={contact.name}
